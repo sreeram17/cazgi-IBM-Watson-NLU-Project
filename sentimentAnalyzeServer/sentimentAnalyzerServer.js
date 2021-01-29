@@ -71,8 +71,9 @@ app.get("/text/emotion", (req,res) => {
 
     naturalLanguageUnderstanding.analyze(analyzeParams)
     .then(analysisResults => {
-        console.log(analysisResults.result.emotion.document.emotion);
-        return res.send(analysisResults.result.emotion.document.emotion);
+        var emoRes = analysisResults.result.emotion.document.emotion;
+        //console.log(emoRes);
+        return res.send(emoRes);
     })
     .catch(err => {
         console.log('error:', err);
@@ -93,9 +94,9 @@ app.get("/text/sentiment", (req,res) => {
 
     naturalLanguageUnderstanding.analyze(analyzeParams)
     .then(analysisResults => {
-        var temp = analysisResults.result.sentiment.document;
-        console.log(temp);
-        return res.send(JSON.stringify(temp));
+        var sentiRes = analysisResults.result.sentiment.document;
+        //console.log(sentiRes);
+        return res.send(sentiRes);
     })
     .catch(err => {
         console.log('error:', err);

@@ -41,24 +41,22 @@ class App extends React.Component {
     if(this.state.mode === "url") {
       url = url+"/url/sentiment?url="+document.getElementById("textinput").value;
     } else {
-      url = url+"/text/sentiment?text="+document.getElementById("textinput").value;
+      url = url+"/text/sentiment/?text="+document.getElementById("textinput").value;
     }
     ret = axios.get(url);
     
     ret.then((response)=>{
-
-      //Include code here to check the sentiment and fomrat the data accordingly
-      /*let myObject = JSON.parse(response);
+      
+      let sentiResp = response.data;
       let output = response.data;
-      if(myObject.label === "positive") {
-        output = <div style={{color:"green",fontSize:20}}>{myObject.score}</div>
-      } else if (myObject.label === "negative"){
-        output = <div style={{color:"red",fontSize:20}}>{myObject.score}</div>
+      if(sentiResp.label === "positive") {
+        output = <div style={{color:"green",fontSize:20}}>{sentiResp.score}</div>
+      } else if (sentiResp.label === "negative"){
+        output = <div style={{color:"red",fontSize:20}}>{sentiResp.score}</div>
       } else {
-        output = <div style={{color:"orange",fontSize:20}}>{myObject.score}</div>
+        output = <div style={{color:"orange",fontSize:20}}>{sentiResp.score}</div>
       }
-      this.setState({sentimentOutput:output});*/
-      //this.setState({sentimentOutput:<EmotionTable emotions={response.data}/>});
+      this.setState({sentimentOutput:output});
     
     });
   }
