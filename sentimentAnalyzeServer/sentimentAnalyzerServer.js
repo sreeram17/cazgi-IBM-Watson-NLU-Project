@@ -1,17 +1,23 @@
 const express = require('express');
 const dotenv = require('dotenv');
+dotenv.config();
 
 const app = new express();
 
+app.use(express.static('client'))
+
+const cors_app = require('cors');
+app.use(cors_app());
+
 function getNLUInstance(){
-    let api_key = process.env.api_key;
-    let api_url = process.env.api_url;
+    let api_key = process.env.API_KEY;
+    let api_url = process.env.API_URL;
 
     const NaturalLanguageUnderstandV1 = require('ibm-watson/natural-language-understanding/v1');
     const { IamAuthenticator } = require ('ibm-watson/auth');
     
     const naturalLanguageUnderstanding = new NaturalLanguageUnderstandV1({
-        version: '2021-01-29',
+        version: '2020-08-01',
         authenticator: new IamAuthenticator({
             apikey: api_key,
         }),
@@ -20,18 +26,34 @@ function getNLUInstance(){
     return naturalLanguageUnderstanding;
 }
 
-app.use(express.static('client'))
-
-const cors_app = require('cors');
-app.use(cors_app());
-
 app.get("/",(req,res)=>{
     res.render('index.html');
   });
 
 app.get("/url/emotion", (req,res) => {
+    let naturalLanguageUnderstanding = getNLUInstance();
+    let analyzeParams = {
+        'url': req.data,
+        'features': {
+            'entities': {
+                'emotion': true,
+                'limit': 2,
+            },
+            'keywords': {
+                'emotion': true,
+                'limit': 2,
+            },
+        },
+    };
 
-    return res.send({"happy":"90","sad":"10"});
+    naturalLanguageUnderstanding.analyze(analyzeParams)
+    .then(analysisResults => {
+        JSON.stringify(analysisResults, null, 2);
+    })
+    .catch(err => {
+        console.log('error:', err);
+    });
+    return res.send(analysisResults);
 });
 
 app.get("/url/sentiment", (req,res) => {
@@ -39,7 +61,27 @@ app.get("/url/sentiment", (req,res) => {
 });
 
 app.get("/text/emotion", (req,res) => {
-    return res.send({"happy":"10","sad":"90"});
+    let naturalLanguageUnderstanding = getNLUInstance();
+    console.log(req.query.text);
+    let analyzeParams = {
+        'text': req.query.text,
+        'features': {
+            'emotion': {
+                'document': true,
+                'limit': 2,
+            }
+        },
+    };
+
+    naturalLanguageUnderstanding.analyze(analyzeParams)
+    .then(analysisResults => {
+        return res.send(JSON.stringify(analysisResults, null, 2));
+    })
+    .catch(err => {
+        console.log('error:', err);
+    });
+    
+    //return res.send({"happy":"10","sad":"90"});
 });
 
 app.get("/text/sentiment", (req,res) => {
