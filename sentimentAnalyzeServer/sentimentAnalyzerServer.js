@@ -32,30 +32,27 @@ app.get("/",(req,res)=>{
 
 app.get("/url/emotion", (req,res) => {
     let naturalLanguageUnderstanding = getNLUInstance();
+    console.log(req.query.text);
     let analyzeParams = {
-        'url': req.data,
+        'url': req.query.text,
         'features': {
-            'entities': {
-                'emotion': true,
-                'limit': 2,
-            },
-            'keywords': {
-                'emotion': true,
-                'limit': 2,
-            },
+            'emotion': {
+                'document': true,
+            }
         },
     };
 
     naturalLanguageUnderstanding.analyze(analyzeParams)
     .then(analysisResults => {
-        JSON.stringify(analysisResults, null, 2);
+        console.log(analysisResults.result);
+        return res.send(analysisResults.result.emotion.document.emotion);
     })
     .catch(err => {
         console.log('error:', err);
     });
-    return res.send(analysisResults);
 });
 
+//To do
 app.get("/url/sentiment", (req,res) => {
     return res.send("url sentiment for "+req.query.url);
 });
@@ -68,24 +65,41 @@ app.get("/text/emotion", (req,res) => {
         'features': {
             'emotion': {
                 'document': true,
-                'limit': 2,
             }
         },
     };
 
     naturalLanguageUnderstanding.analyze(analyzeParams)
     .then(analysisResults => {
-        return res.send(JSON.stringify(analysisResults, null, 2));
+        console.log(analysisResults.result.emotion.document.emotion);
+        return res.send(analysisResults.result.emotion.document.emotion);
     })
     .catch(err => {
         console.log('error:', err);
     });
-    
-    //return res.send({"happy":"10","sad":"90"});
 });
 
 app.get("/text/sentiment", (req,res) => {
-    return res.send("text sentiment for "+req.query.text);
+    let naturalLanguageUnderstanding = getNLUInstance();
+    console.log(req.query.text);
+    let analyzeParams = {
+        'text': req.query.text,
+        'features': {
+            'sentiment': {
+                'document': true
+            }
+        },
+    };
+
+    naturalLanguageUnderstanding.analyze(analyzeParams)
+    .then(analysisResults => {
+        var temp = analysisResults.result.sentiment.document;
+        console.log(temp);
+        return res.send(JSON.stringify(temp));
+    })
+    .catch(err => {
+        console.log('error:', err);
+    });
 });
 
 let server = app.listen(8080, () => {
