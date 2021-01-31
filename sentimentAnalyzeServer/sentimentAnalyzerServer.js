@@ -52,9 +52,26 @@ app.get("/url/emotion", (req,res) => {
     });
 });
 
-//To do
 app.get("/url/sentiment", (req,res) => {
-    return res.send("url sentiment for "+req.query.url);
+    let naturalLanguageUnderstanding = getNLUInstance();
+    console.log(req.query.text);
+    let analyzeParams = {
+        'url': req.query.text,
+        'features': {
+            'sentiment': {
+                'document': true
+            }
+        },
+    };
+
+    naturalLanguageUnderstanding.analyze(analyzeParams)
+    .then(analysisResults => {
+        var sentiRes = analysisResults.result.sentiment.document;
+        return res.send(sentiRes);
+    })
+    .catch(err => {
+        console.log('error:', err);
+    });
 });
 
 app.get("/text/emotion", (req,res) => {
@@ -72,7 +89,6 @@ app.get("/text/emotion", (req,res) => {
     naturalLanguageUnderstanding.analyze(analyzeParams)
     .then(analysisResults => {
         var emoRes = analysisResults.result.emotion.document.emotion;
-        //console.log(emoRes);
         return res.send(emoRes);
     })
     .catch(err => {
@@ -95,7 +111,6 @@ app.get("/text/sentiment", (req,res) => {
     naturalLanguageUnderstanding.analyze(analyzeParams)
     .then(analysisResults => {
         var sentiRes = analysisResults.result.sentiment.document;
-        //console.log(sentiRes);
         return res.send(sentiRes);
     })
     .catch(err => {
