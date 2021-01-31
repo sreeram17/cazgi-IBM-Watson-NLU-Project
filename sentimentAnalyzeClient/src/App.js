@@ -50,11 +50,11 @@ class App extends React.Component {
       let sentiResp = response.data;
       let output = response.data;
       if(sentiResp.label === "positive") {
-        output = <div style={{color:"green",fontSize:20}}>{sentiResp.score}</div>
+        output = <div style={{color:"green",fontSize:20}}>Positive sentiment score of {sentiResp.score}</div>
       } else if (sentiResp.label === "negative"){
-        output = <div style={{color:"red",fontSize:20}}>{sentiResp.score}</div>
+        output = <div style={{color:"red",fontSize:20}}>Negative sentiment score of {sentiResp.score}</div>
       } else {
-        output = <div style={{color:"orange",fontSize:20}}>{sentiResp.score}</div>
+        output = <div style={{color:"orange",fontSize:20}}>Neutral sentiment score of {sentiResp.score}</div>
       }
       this.setState({sentimentOutput:output});
     
