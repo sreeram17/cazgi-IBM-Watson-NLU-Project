@@ -32,9 +32,9 @@ app.get("/",(req,res)=>{
 
 app.get("/url/emotion", (req,res) => {
     let naturalLanguageUnderstanding = getNLUInstance();
-    console.log(req.query.text);
+    console.log(req.query.url);
     let analyzeParams = {
-        'url': req.query.text,
+        'url': req.query.url,
         'features': {
             'emotion': {
                 'document': true,
@@ -54,9 +54,9 @@ app.get("/url/emotion", (req,res) => {
 
 app.get("/url/sentiment", (req,res) => {
     let naturalLanguageUnderstanding = getNLUInstance();
-    console.log(req.query.text);
+    console.log(req.query.url);
     let analyzeParams = {
-        'url': req.query.text,
+        'url': req.query.url,
         'features': {
             'sentiment': {
                 'document': true
